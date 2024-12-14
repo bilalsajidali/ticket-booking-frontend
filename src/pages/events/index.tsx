@@ -26,12 +26,15 @@ export default function Events() {
   const [events, setEvents] = useState<Event[]>([]);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Logout function
   const handleLogout = () => {
     // Clear local storage
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
     
     // Redirect to login page
     router.push('/');
@@ -40,6 +43,7 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       const token = localStorage.getItem('token');
+      const userRole = localStorage.getItem("userRole");
   
       if (token) {
         try {
@@ -49,6 +53,10 @@ export default function Events() {
             },
           });
           setEvents(response.data);
+          if (userRole !== "user") {
+            router.push("/");
+            return;
+          } setAuthLoading(false);
         } catch (error) {
           console.error("Error fetching events: ", error);
           // If token is invalid, redirect to login
@@ -56,13 +64,17 @@ export default function Events() {
         }
       } else {
         // If no token, redirect to login
-        router.push('/login');
+        router.push('/');
       }
     }
   
     fetchEvents();
   }, []);
 
+  //Loader
+  if (authLoading) {
+    return <div className="text-center py-12">Loading...</div>;
+  }
   // Function to create booking
   const createBooking = async (eventId: number) => {
     const token = localStorage.getItem("token");

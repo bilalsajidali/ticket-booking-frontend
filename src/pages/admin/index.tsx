@@ -30,23 +30,32 @@ export default function AdminEvents() {
   const [error, setError] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [authLoading, setAuthLoading] = useState(true);
 
 
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
     router.push('/');
   };
 
   useEffect(() => {
     async function fetchEvents() {
       const token = localStorage.getItem("token");
+      const userRole = localStorage.getItem("userRole");
       if (!token) {
         setError("No token found, please log in.");
         setLoading(false);
+        router.push("/");
         return;
       }
+      if (userRole !== "admin") {
+        router.push("/");
+        return;
+      } setAuthLoading(false);
 
       try {
         const response = await api.get("/events", {
@@ -66,6 +75,11 @@ export default function AdminEvents() {
 
     fetchEvents();
   }, []);
+
+// Loader
+if (authLoading || loading) {
+  return <div className="text-center py-12">Loading...</div>;
+}
 
   const handleAddEvent = async () => {
     const token = localStorage.getItem("token");

@@ -26,6 +26,8 @@ export default function AuthForm({ type }: AuthFormProps) {
         localStorage.setItem("token", accessToken);
         localStorage.setItem("userId",userData['id'] );
         localStorage.setItem("userEmail",userData['email'] );
+        localStorage.setItem("userRole",userData['role']);
+
         // Route based on role
         if (userData['role'] === "user") {
             router.push("/events");  // Redirect to events/index.tsx for user

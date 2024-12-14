@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Inter } from 'next/font/google';
 import AuthForm from "../components/AuthForm";
+import { useRouter } from 'next/router';
 
 // Custom font configuration
 const inter = Inter({ 
@@ -11,6 +12,28 @@ const inter = Inter({
 });
 
 export default function Home() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+
+    if (token && role) {
+      if (role === "admin") {
+        router.push("/admin");
+      } else if (role === "user") {
+        router.push("/events");
+      }
+    }setLoading(false)
+    // If no token or role, stay on "/"
+  }, [router]);
+
+
+  if (loading) {
+    return <div className="text-center py-12">Loading...</div>;
+    
+  }
   return (
     <div className={`${inter.className} min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-12`}>
       <div className="w-full max-w-md space-y-8">
