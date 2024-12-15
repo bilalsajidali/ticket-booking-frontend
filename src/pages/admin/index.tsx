@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import api from "../../utils/api";
 
 // Custom font configuration
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '600', '700'],
   display: 'swap'
@@ -76,17 +76,17 @@ export default function AdminEvents() {
     fetchEvents();
   }, []);
 
-// Loader
-if (authLoading || loading) {
-  return <div className="text-center py-12">Loading...</div>;
-}
+  // Loader
+  if (authLoading || loading) {
+    return <div className="text-center py-12">Loading...</div>;
+  }
 
   const handleAddEvent = async () => {
     const token = localStorage.getItem("token");
     if (!token || !newEvent.name || !newEvent.date || !newEvent.location) {
       setError("Please fill in all required fields.");
       return;
-    }    
+    }
     try {
       const response = await api.post("/events", newEvent, {
         headers: {
@@ -148,8 +148,8 @@ if (authLoading || loading) {
   }
 
   // Filter events
-  const filteredEvents = events.filter(event => 
-    event.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+  const filteredEvents = events.filter(event =>
+    event.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -157,30 +157,30 @@ if (authLoading || loading) {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h1 className="text-4xl font-bold text-slate-900 mb-4 md:mb-0">
-              Manage Events
-            </h1>
-            <input 
-                type="text" 
-                placeholder="Search" 
-                className="px-4 py-2 border border-slate-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full md:w-64"
+          <div className="flex justify-between items-center">
+            <h1 className="text-4xl font-bold text-slate-900">Manage Events</h1>
+            <div className="flex items-center space-x-4">
+              <input
+                type="text"
+                placeholder="Search"
+                className="px-4 py-2 border border-slate-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            <button 
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors flex items-center"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5 mr-2" />
-              Logout
-            </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors flex items-center"
+                title="Logout"
+              >
+                <LogOut className="w-5 h-5 mr-2" />
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Error Handling */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
               {error}
             </div>
           )}
@@ -245,7 +245,7 @@ if (authLoading || loading) {
         </div>
 
         {/* Events Grid */}
-        
+
         {filteredEvents.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl shadow-md">
             <p className="text-2xl text-slate-500">No events found</p>
@@ -253,15 +253,15 @@ if (authLoading || loading) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event) => (
-              <div 
-                key={event.id} 
+              <div
+                key={event.id}
                 className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
               >
                 {/* Event Image */}
                 <div className="relative h-48 w-full">
-                  <img 
-                    src={event.imageUrl || `events.png`} 
-                    alt={event.name} 
+                  <img
+                    src={event.imageUrl || `events.png`}
+                    alt={event.name}
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -275,7 +275,7 @@ if (authLoading || loading) {
                 </div>
                 {/* Actions */}
                 <div className="flex justify-between items-center p-4 border-t border-slate-200">
-                  <button 
+                  <button
                     onClick={() => {
                       setEditEvent(event);
                       setIsEditModalOpen(true);
@@ -284,7 +284,7 @@ if (authLoading || loading) {
                   >
                     <Edit className="w-4 h-4 inline-block mr-1" /> Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDeleteEvent(event.id)}
                     className="text-red-600 hover:text-red-800 text-sm font-medium"
                   >
@@ -295,7 +295,7 @@ if (authLoading || loading) {
             ))}
           </div>
         )}
-      
+
 
         {/* Edit Modal */}
         {isEditModalOpen && (

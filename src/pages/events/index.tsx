@@ -27,16 +27,14 @@ export default function Events() {
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [authLoading, setAuthLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null); // For messages (error/success)
 
   // Logout function
   const handleLogout = () => {
-    // Clear local storage
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userRole');
-    
-    // Redirect to login page
     router.push('/');
   };
 
@@ -44,7 +42,7 @@ export default function Events() {
     async function fetchEvents() {
       const token = localStorage.getItem('token');
       const userRole = localStorage.getItem("userRole");
-  
+
       if (token) {
         try {
           const response = await api.get("/events", {
@@ -56,22 +54,20 @@ export default function Events() {
           if (userRole !== "user") {
             router.push("/");
             return;
-          } setAuthLoading(false);
+          }
+          setAuthLoading(false);
         } catch (error) {
           console.error("Error fetching events: ", error);
-          // If token is invalid, redirect to login
           handleLogout();
         }
       } else {
-        // If no token, redirect to login
         router.push('/');
       }
     }
-  
+
     fetchEvents();
   }, []);
 
-  //Loader
   if (authLoading) {
     return <div className="text-center py-12">Loading...</div>;
   }
@@ -80,13 +76,14 @@ export default function Events() {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const quantity = quantities[eventId] || 1;
-
+  
     if (!token) {
-      console.log("No token found, please log in.");
+      setMessage("No token found, please log in.");
+      setTimeout(() => setMessage(null), 5000);  // Clear message after 5 seconds
       handleLogout();
       return;
     }
-
+  
     try {
       const response = await api.post(
         "/bookings",
@@ -101,17 +98,24 @@ export default function Events() {
           },
         }
       );
-      console.log("Booking successful:", response.data);
-      // TODO: Add success notification
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      // TODO: Add error notification
+      setMessage("Booking successful!");
+      setTimeout(() => setMessage(null), 5000);  // Clear message after 5 seconds
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // If the error is an instance of Error, access the message
+        setMessage("" + error.message);
+      } else if (error && typeof error === "object" && "response" in error) {
+        // If the error has a 'response' field, handle it accordingly
+        setMessage("" + (error as any).response?.data?.message || "Unknown error");
+      } else {
+        // Generic error message if type is not recognized
+        setMessage("An unknown error occurred.");
+      }
+      setTimeout(() => setMessage(null), 5000);  // Clear message after 5 seconds
     }
   };
-
-  // Filter events
   const filteredEvents = events.filter(event => 
-    event.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+    event.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -150,6 +154,12 @@ export default function Events() {
             </div>
           </div>
         </div>
+        {/* Message Display */}
+        {message && (
+          <div className={`mb-6 p-4 text-center rounded-md ${message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            {message}
+          </div>
+        )}
 
         {/* Events Grid */}
         {filteredEvents.length === 0 ? (
@@ -205,7 +215,8 @@ export default function Events() {
                       <input
                         type="number"
                         className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        value={quantities[event.id] || 1}
+                        value={quantities[event.id]}
+                        placeholder="1 is defualt"
                         onChange={(e) => setQuantities({
                           ...quantities,
                           [event.id]: Number(e.target.value)
