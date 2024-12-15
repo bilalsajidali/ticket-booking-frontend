@@ -216,7 +216,7 @@ export default function Events() {
                         type="number"
                         className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         value={quantities[event.id]}
-                        placeholder="1 is defualt"
+                        placeholder=" '1' Ticket is default"
                         onChange={(e) => setQuantities({
                           ...quantities,
                           [event.id]: Number(e.target.value)
