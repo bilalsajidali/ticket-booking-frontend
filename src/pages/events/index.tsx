@@ -119,15 +119,15 @@ export default function Events() {
   );
 
   return (
-    <div className={`${inter.className} min-h-screen bg-slate-50 p-6 md:p-10`}>
+    <div className={`${inter.className} min-h-screen bg-slate-50 p-4 md:p-6 lg:p-10`}>
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h1 className="text-4xl font-bold text-slate-900 mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">
               Discover Events
             </h1>
-            <div className="flex space-x-4 items-center">
+            <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 w-full md:w-auto">
               <input 
                 type="text" 
                 placeholder="Search" 
@@ -137,7 +137,7 @@ export default function Events() {
               />
               <button 
                 onClick={() => router.push('/bookings')}
-                className="bg-indigo-500 text-white px-4 py-2 rounded-full hover:bg-indigo-600 transition-colors flex items-center mr-2"
+                className="bg-indigo-500 text-white px-4 py-2 rounded-full hover:bg-indigo-600 transition-colors flex items-center justify-center"
                 title="My Bookings"
               >
                 <TicketCheck className="w-5 h-5 mr-2" />
@@ -145,7 +145,7 @@ export default function Events() {
               </button>
               <button 
                 onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors flex items-center"
+                className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center"
                 title="Logout"
               >
                 <LogOut className="w-5 h-5 mr-2" />
@@ -164,17 +164,17 @@ export default function Events() {
         {/* Events Grid */}
         {filteredEvents.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl shadow-md">
-            <p className="text-2xl text-slate-500">No events found</p>
+            <p className="text-lg sm:text-2xl text-slate-500">No events found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event) => (
               <div 
                 key={event.id} 
                 className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
               >
                 {/* Event Image */}
-                <div className="relative h-48 w-full">
+                <div className="relative h-40 sm:h-48 w-full">
                   <img 
                     src={event.imageUrl || `events.png`} 
                     alt={event.name} 
@@ -187,8 +187,8 @@ export default function Events() {
                 </div>
 
                 {/* Event Details */}
-                <div className="p-6">
-                  <h2 className="text-2xl font-bold text-slate-900 mb-2">{event.name}</h2>
+                <div className="p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 mb-2">{event.name}</h2>
                   <p className="text-slate-600 mb-4 line-clamp-2">{event.description}</p>
 
                   {/* Event Meta */}
@@ -209,8 +209,8 @@ export default function Events() {
                   </div>
 
                   {/* Booking Section */}
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-grow">
+                  <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                    <div className="flex-grow w-full sm:w-auto">
                       <label className="block text-sm text-slate-700 mb-1">Tickets</label>
                       <input
                         type="number"
@@ -226,7 +226,7 @@ export default function Events() {
                       />
                     </div>
                     <button 
-                      className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                      className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors w-full sm:w-auto"
                       onClick={() => createBooking(event.id)}
                     >
                       Book Now
